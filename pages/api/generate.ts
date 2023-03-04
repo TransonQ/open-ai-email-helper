@@ -1,28 +1,29 @@
-import type { NextRequest } from "next/server";
-import { OpenAIStream, OpenAIStreamPayload } from "../../utils/OpenAIStream";
+import type { NextRequest } from 'next/server'
+import { OpenAIStream, OpenAIStreamPayload } from '../../utils/OpenAIStream'
 
 if (!process.env.OPENAI_API_KEY) {
-  throw new Error("Missing env var from OpenAI");
+  throw new Error('Missing env var from OpenAI')
 }
 
 export const config = {
-  runtime: "edge",
-};
+  runtime: 'edge',
+}
 
 const handler = async (req: NextRequest): Promise<Response> => {
   const { prompt } = (await req.json()) as {
-    prompt?: string;
-  };
+    prompt?: string
+  }
 
   if (!prompt) {
-    return new Response("No prompt in the request", { status: 400 });
+    return new Response('No prompt in the request', { status: 400 })
   }
 
   const payload: OpenAIStreamPayload = {
     // model:"text-chat-davinci-002-20230126",
     // model:"text-chat-davinci-003",
-    
-    model: "text-davinci-003",
+
+    model: 'text-davinci-003',
+    // model: 'gpt-3.5-turbo-0301',
     // model:"text-curie-001",
     prompt,
     temperature: 0.7,
@@ -32,10 +33,10 @@ const handler = async (req: NextRequest): Promise<Response> => {
     max_tokens: 500,
     stream: true,
     n: 1,
-  };
+  }
 
-  const stream = await OpenAIStream(payload);
-  return new Response(stream);
-};
+  const stream = await OpenAIStream(payload)
+  return new Response(stream)
+}
 
-export default handler;
+export default handler
